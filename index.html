@@ -22,7 +22,7 @@
   [hidden]{ display:none !important; }
 </style>
 </head>
-<body><style>
+<body><<style>
   :root{
     color-scheme: dark;
     --bg:#000000;
@@ -333,7 +333,7 @@
     <div class="sheet" role="dialog" aria-modal="true" aria-label="Ajustes del truco">
       <div class="grab"></div>
       <h2>Ajustes del truco</h2>
-      <p class="sub">build 5 · sumando forzado — se arma sola cada vez que abrís la app.<br>Mantené pulsado el número grande 0,8 s para volver a abrir este panel.</p>
+      <p class="sub">build 6 · sumando forzado — se repite todas las veces que quieras, sin rearmar.<br>Mantené pulsado el número grande 0,8 s para volver a abrir este panel.</p>
 
       <div class="peek">
         <div class="k">Resultado final si disparás ahora</div>
@@ -354,8 +354,15 @@
           <button class="sw" id="swArmed" type="button" aria-pressed="true" aria-label="Truco armado"></button>
         </div>
         <div class="row">
-          <div class="lbl"><b>Una sola vez</b><span>Se desarma solo después de usarlo</span></div>
-          <button class="sw" id="swOnce" type="button" aria-pressed="true" aria-label="Una sola vez"></button>
+          <div class="lbl"><b>Cuándo dispara</b><span id="guardNote">Solo si hubo dos × antes del +. Una cuenta normal nunca lo activa</span></div>
+          <div class="seg" id="segGuard">
+            <button type="button" data-v="strict" aria-pressed="true">2 × y un +</button>
+            <button type="button" data-v="loose" aria-pressed="false">Cualquier +</button>
+          </div>
+        </div>
+        <div class="row">
+          <div class="lbl"><b>Una sola vez</b><span>Apagado: lo repetís todas las veces que quieras sin rearmar</span></div>
+          <button class="sw" id="swOnce" type="button" aria-pressed="false" aria-label="Una sola vez"></button>
         </div>
         <div class="row">
           <div class="lbl"><b>Rearmar con AC ×3</b><span>Tres toques seguidos a AC lo vuelven a armar (parpadea el 0)</span></div>
@@ -423,7 +430,7 @@
 
   /* ---------------- ajustes ---------------- */
   var DEF = {
-    cfgv:2, method:"addend", armed:true, once:true, rearm:true,
+    cfgv:3, method:"addend", armed:true, once:false, rearm:true, guard:"strict",
     offset:1, order:"dm", hour:"24", sep:true, bar:"auto"
   };
   var cfg = Object.assign({}, DEF);
@@ -431,8 +438,10 @@
     var raw = localStorage.getItem("calc.cfg");
     if(raw){
       var saved = JSON.parse(raw);
-      delete saved.armed;                              // el armado NUNCA se hereda
-      if(saved.cfgv !== DEF.cfgv) delete saved.offset; // adopta el adelanto nuevo
+      delete saved.armed;              // el armado NUNCA se hereda
+      if(saved.cfgv !== DEF.cfgv){     // adopta los defaults nuevos
+        delete saved.offset; delete saved.once; delete saved.guard;
+      }
       cfg = Object.assign(cfg, saved);
     }
   }catch(e){}
@@ -459,6 +468,15 @@
   // forzaje del sumando
   var queue = null;   // dígitos que van a ir apareciendo
   var qi = 0;         // cuántos se consumieron
+  var mulCount = 0;   // multiplicaciones encadenadas desde el último AC o =
+
+  // El truco solo reconoce la forma de la rutina: dos × y después un +.
+  // Así una cuenta normal (5 + 5, o 2 × 3 + 4) nunca lo dispara sin querer,
+  // y no hace falta desarmarlo entre función y función.
+  function willForce(){
+    return cfg.method === "addend" && cfg.armed && op === "add" &&
+           (cfg.guard === "loose" || mulCount >= 2);
+  }
 
   var out = document.getElementById("out");
   var screenEl = document.getElementById("screen");
@@ -580,7 +598,7 @@
     if(justEq){ acc = null; op = null; justEq = false; }
 
     // primer toque después del "+": se calcula el sumando de una vez
-    if(cfg.method === "addend" && cfg.armed && op === "add" && !typing && queue === null){
+    if(willForce() && !typing && queue === null){
       var built = buildAddend(acc);
       if(built){ queue = built; qi = 0; }
     }
@@ -602,9 +620,7 @@
 
   // mientras el truco está a punto de disparar (o disparando), coma/signo/% no hacen nada:
   // si no, el espectador podría desarmarlo aporreando una tecla que no sea un dígito
-  function locked(){
-    return queue !== null || (cfg.method === "addend" && cfg.armed && op === "add");
-  }
+  function locked(){ return queue !== null || willForce(); }
 
   function inputDot(){
     if(locked()) return;
@@ -651,7 +667,7 @@
     var full = (disp === "0" && !typing && !frozen);
     clearQueue();
     if(full){
-      acc = null; op = null; lastOp = null; lastArg = null; justEq = false;
+      acc = null; op = null; lastOp = null; lastArg = null; justEq = false; mulCount = 0;
     }
     // tres toques seguidos de AC rearman, venga la pantalla como venga
     if(cfg.rearm){
@@ -681,6 +697,7 @@
     }else if(op === null){
       acc = cur;
     }
+    if(o === "mul") mulCount++;
     op = o; typing = false; justEq = false;
     render();
   }
@@ -712,7 +729,7 @@
     }else{
       acc = cur;
     }
-    typing = false; justEq = true; frozen = false;
+    typing = false; justEq = true; frozen = false; mulCount = 0;
     if(usedTrick && cfg.once){ cfg.armed = false; save(); syncUI(); }
     render();
   }
@@ -828,6 +845,7 @@
     });
   }
   bindSeg("segMethod","method");
+  bindSeg("segGuard","guard");
   bindSeg("segOffset","offset", Number);
   bindSeg("segOrder","order");
   bindSeg("segHour","hour");
@@ -854,8 +872,12 @@
     document.getElementById("methodNote").textContent = cfg.method === "addend"
       ? "Fuerza el sumando: la cuenta es real y verificable"
       : "Fuerza el resultado: el = miente, no se puede rehacer";
+    document.getElementById("guardNote").textContent = cfg.guard === "strict"
+      ? "Solo si hubo dos × antes del +. Una cuenta normal nunca lo activa"
+      : "Cualquier + lo dispara. Ojo: puede saltar en una cuenta común";
     document.getElementById("hintText").innerHTML = cfg.method === "addend" ? HINT_ADDEND : HINT_RESULT;
     syncSeg("segMethod", cfg.method);
+    syncSeg("segGuard", cfg.guard);
     syncSeg("segOffset", cfg.offset);
     syncSeg("segOrder", cfg.order);
     syncSeg("segHour", cfg.hour);
