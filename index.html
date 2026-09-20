@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="es">
 <head>
 <meta charset="utf-8">
@@ -306,24 +306,24 @@
     </button>
     <button class="key fn" data-k="clear" id="kClear" type="button">AC</button>
     <button class="key fn" data-k="pct" type="button">%</button>
-    <button class="key op" data-k="div" type="button">Ã·</button>
+    <button class="key op" data-k="div" type="button">÷</button>
 
     <button class="key" data-k="7" type="button">7</button>
     <button class="key" data-k="8" type="button">8</button>
     <button class="key" data-k="9" type="button">9</button>
-    <button class="key op" data-k="mul" type="button">Ã—</button>
+    <button class="key op" data-k="mul" type="button">×</button>
 
     <button class="key" data-k="4" type="button">4</button>
     <button class="key" data-k="5" type="button">5</button>
     <button class="key" data-k="6" type="button">6</button>
-    <button class="key op" data-k="sub" type="button">âˆ’</button>
+    <button class="key op" data-k="sub" type="button">−</button>
 
     <button class="key" data-k="1" type="button">1</button>
     <button class="key" data-k="2" type="button">2</button>
     <button class="key" data-k="3" type="button">3</button>
     <button class="key op" data-k="add" type="button">+</button>
 
-    <button class="key fn" data-k="neg" type="button" aria-label="Cambiar signo">âºâˆ•â‚‹</button>
+    <button class="key fn" data-k="neg" type="button" aria-label="Cambiar signo">⁺∕₋</button>
     <button class="key" data-k="0" type="button">0</button>
     <button class="key dot" data-k="dot" type="button">,</button>
     <button class="key op" data-k="eq" type="button">=</button>
@@ -333,17 +333,17 @@
     <div class="sheet" role="dialog" aria-modal="true" aria-label="Ajustes del truco">
       <div class="grab"></div>
       <h2>Ajustes del truco</h2>
-      <p class="sub">build 5 Â· sumando forzado â€” se arma sola cada vez que abrÃ­s la app.<br>MantenÃ© pulsado el nÃºmero grande 0,8 s para volver a abrir este panel.</p>
+      <p class="sub">build 5 · sumando forzado — se arma sola cada vez que abrís la app.<br>Mantené pulsado el número grande 0,8 s para volver a abrir este panel.</p>
 
       <div class="peek">
-        <div class="k">Resultado final si disparÃ¡s ahora</div>
-        <div class="v" id="peekVal">â€”</div>
-        <div class="t" id="peekTime">â€”</div>
+        <div class="k">Resultado final si disparás ahora</div>
+        <div class="v" id="peekVal">—</div>
+        <div class="t" id="peekTime">—</div>
       </div>
 
       <div class="group">
         <div class="row">
-          <div class="lbl"><b>MÃ©todo</b><span id="methodNote">Fuerza el sumando: la cuenta es real y verificable</span></div>
+          <div class="lbl"><b>Método</b><span id="methodNote">Fuerza el sumando: la cuenta es real y verificable</span></div>
           <div class="seg" id="segMethod">
             <button type="button" data-v="addend" aria-pressed="true">Sumando</button>
             <button type="button" data-v="result" aria-pressed="false">Resultado</button>
@@ -354,11 +354,11 @@
           <button class="sw" id="swArmed" type="button" aria-pressed="true" aria-label="Truco armado"></button>
         </div>
         <div class="row">
-          <div class="lbl"><b>Una sola vez</b><span>Se desarma solo despuÃ©s de usarlo</span></div>
+          <div class="lbl"><b>Una sola vez</b><span>Se desarma solo después de usarlo</span></div>
           <button class="sw" id="swOnce" type="button" aria-pressed="true" aria-label="Una sola vez"></button>
         </div>
         <div class="row">
-          <div class="lbl"><b>Rearmar con AC Ã—3</b><span>Tres toques seguidos a AC lo vuelven a armar (parpadea el 0)</span></div>
+          <div class="lbl"><b>Rearmar con AC ×3</b><span>Tres toques seguidos a AC lo vuelven a armar (parpadea el 0)</span></div>
           <button class="sw" id="swRearm" type="button" aria-pressed="true" aria-label="Rearmar con AC tres veces"></button>
         </div>
       </div>
@@ -378,12 +378,12 @@
         <div class="row">
           <div class="lbl"><b>Orden</b><span>DDMMHHMM o MMDDHHMM</span></div>
           <div class="seg" id="segOrder">
-            <button type="button" data-v="dm" aria-pressed="true">DÃ­aÂ·Mes</button>
-            <button type="button" data-v="md" aria-pressed="false">MesÂ·DÃ­a</button>
+            <button type="button" data-v="dm" aria-pressed="true">Día·Mes</button>
+            <button type="button" data-v="md" aria-pressed="false">Mes·Día</button>
           </div>
         </div>
         <div class="row">
-          <div class="lbl"><b>Hora</b><span>Formato de las dos Ãºltimas parejas</span></div>
+          <div class="lbl"><b>Hora</b><span>Formato de las dos últimas parejas</span></div>
           <div class="seg" id="segHour">
             <button type="button" data-v="24" aria-pressed="true">24 h</button>
             <button type="button" data-v="12" aria-pressed="false">12 h</button>
@@ -393,21 +393,21 @@
 
       <div class="group">
         <div class="row">
-          <div class="lbl"><b>Separador de miles</b><span>Apagado se lee y se dicta mÃ¡s limpio: 20091314</span></div>
+          <div class="lbl"><b>Separador de miles</b><span>Apagado se lee y se dicta más limpio: 20091314</span></div>
           <button class="sw" id="swSep" type="button" aria-pressed="true" aria-label="Separador de miles"></button>
         </div>
         <div class="row">
-          <div class="lbl"><b>Barra de estado falsa</b><span>Apagala si la abrÃ­s como app desde la pantalla de inicio</span></div>
+          <div class="lbl"><b>Barra de estado falsa</b><span>Apagala si la abrís como app desde la pantalla de inicio</span></div>
           <div class="seg" id="segBar">
             <button type="button" data-v="auto" aria-pressed="true">Auto</button>
-            <button type="button" data-v="on" aria-pressed="false">SÃ­</button>
+            <button type="button" data-v="on" aria-pressed="false">Sí</button>
             <button type="button" data-v="off" aria-pressed="false">No</button>
           </div>
         </div>
       </div>
 
       <div class="acts">
-        <button class="ghost" id="btnTest" type="button">Ensayo rÃ¡pido</button>
+        <button class="ghost" id="btnTest" type="button">Ensayo rápido</button>
         <button class="primary" id="btnClose" type="button">Listo</button>
       </div>
 
@@ -436,7 +436,7 @@
       cfg = Object.assign(cfg, saved);
     }
   }catch(e){}
-  cfg.armed = true;         // cada vez que abrÃ­s la app, queda armada
+  cfg.armed = true;         // cada vez que abrís la app, queda armada
   cfg.cfgv = DEF.cfgv;
 
   function save(){
@@ -457,8 +457,8 @@
   var frozen = false;
 
   // forzaje del sumando
-  var queue = null;   // dÃ­gitos que van a ir apareciendo
-  var qi = 0;         // cuÃ¡ntos se consumieron
+  var queue = null;   // dígitos que van a ir apareciendo
+  var qi = 0;         // cuántos se consumieron
 
   var out = document.getElementById("out");
   var screenEl = document.getElementById("screen");
@@ -538,13 +538,13 @@
     var a = cfg.order === "dm" ? dd + mm : mm + dd;
     return {
       value: Number(a + hh + mi),
-      label: dd + "/" + mm + " Â· " + hh + ":" + mi,
+      label: dd + "/" + mm + " · " + hh + ":" + mi,
       minuteStart: Math.floor(ms / 60000) * 60000
     };
   }
   function targetNow(){ return targetAt(Date.now() + cfg.offset * 60000); }
 
-  // X = fecha âˆ’ producto, o null si la cuenta no sirve
+  // X = fecha − producto, o null si la cuenta no sirve
   function buildAddend(P){
     if(P === null || !isFinite(P)) return null;
     if(Math.abs(P - Math.round(P)) > 1e-9) return null;
@@ -579,14 +579,14 @@
     resetAfterFrozen();
     if(justEq){ acc = null; op = null; justEq = false; }
 
-    // primer toque despuÃ©s del "+": se calcula el sumando de una vez
+    // primer toque después del "+": se calcula el sumando de una vez
     if(cfg.method === "addend" && cfg.armed && op === "add" && !typing && queue === null){
       var built = buildAddend(acc);
       if(built){ queue = built; qi = 0; }
     }
 
     if(queue !== null){
-      if(qi >= queue.length) return;      // toques de mÃ¡s: no pasa nada
+      if(qi >= queue.length) return;      // toques de más: no pasa nada
       d = queue.charAt(qi++);
     }
 
@@ -600,8 +600,8 @@
     render();
   }
 
-  // mientras el truco estÃ¡ a punto de disparar (o disparando), coma/signo/% no hacen nada:
-  // si no, el espectador podrÃ­a desarmarlo aporreando una tecla que no sea un dÃ­gito
+  // mientras el truco está a punto de disparar (o disparando), coma/signo/% no hacen nada:
+  // si no, el espectador podría desarmarlo aporreando una tecla que no sea un dígito
   function locked(){
     return queue !== null || (cfg.method === "addend" && cfg.armed && op === "add");
   }
@@ -691,7 +691,7 @@
     var usedTrick = (queue !== null && qi > 0);
     clearQueue();
 
-    // mÃ©todo "resultado": el = miente
+    // método "resultado": el = miente
     if(cfg.method === "result" && cfg.armed && op === "add"){
       disp = String(targetNow().value);
       acc = null; op = null; lastOp = null; lastArg = null;
@@ -700,7 +700,7 @@
       return render();
     }
 
-    // mÃ©todo "sumando": suma de verdad, y da la fecha porque el sumando ya venÃ­a cocinado
+    // método "sumando": suma de verdad, y da la fecha porque el sumando ya venía cocinado
     if(op !== null){
       lastOp = op; lastArg = cur;
       acc = calc(acc, cur, op);
@@ -785,11 +785,11 @@
     document.getElementById("peekVal").textContent = pretty(String(t.value));
     var wait = Math.max(0, Math.round((t.minuteStart - now) / 1000));
     var mm = Math.floor(wait / 60), ss = wait % 60;
-    var line = t.label + " â€” el reloj lo alcanza en <em>" + mm + ":" + pad2(ss) + "</em> y te quedan 60 s para rematar.";
+    var line = t.label + " — el reloj lo alcanza en <em>" + mm + ":" + pad2(ss) + "</em> y te quedan 60 s para rematar.";
     if(cfg.method === "addend"){
       var lo = String(t.value - 890109).length;
       var hi = String(t.value - 2000).length;
-      line += "<br>Sumando: <em>" + (lo === hi ? lo + " dÃ­gitos" : lo + "â€“" + hi + " dÃ­gitos") + "</em>.";
+      line += "<br>Sumando: <em>" + (lo === hi ? lo + " dígitos" : lo + "–" + hi + " dígitos") + "</em>.";
     }
     document.getElementById("peekTime").innerHTML = line;
   }
@@ -799,7 +799,7 @@
     clearQueue();
     acc = null; op = null; lastOp = null; justEq = false; frozen = false;
     if(cfg.method === "addend"){
-      // deja montado 7 Ã— 42 Ã— 385 + , listo para que aporrees el teclado
+      // deja montado 7 × 42 × 385 + , listo para que aporrees el teclado
       disp = fmt(7 * 42 * 385); acc = 7 * 42 * 385; op = "add"; typing = false;
     }else{
       disp = String(targetNow().value); frozen = true; typing = false;
@@ -840,8 +840,8 @@
     }
   }
 
-  var HINT_ADDEND = 'Rutina: <code>AC</code> â†’ 1 cifra <code>Ã—</code> 2 cifras <code>Ã—</code> 3 cifras <code>+</code> (acÃ¡ se ve el producto: dictalo) â†’ que aporreen el teclado hasta que <b>la pantalla deje de crecer</b> â†’ dictÃ¡s ese sumando â†’ <code>=</code>. La suma es real: cualquiera la rehace y le da igual.';
-  var HINT_RESULT = 'Rutina: <code>AC</code> â†’ 1 cifra <code>Ã—</code> 2 cifras <code>Ã—</code> 3 cifras <code>+</code> â†’ que aporreen unas 8 teclas â†’ <code>=</code>. AcÃ¡ miente el <code>=</code>, asÃ­ que <b>nadie puede rehacer la cuenta</b>.';
+  var HINT_ADDEND = 'Rutina: <code>AC</code> → 1 cifra <code>×</code> 2 cifras <code>×</code> 3 cifras <code>+</code> (acá se ve el producto: dictalo) → que aporreen el teclado hasta que <b>la pantalla deje de crecer</b> → dictás ese sumando → <code>=</code>. La suma es real: cualquiera la rehace y le da igual.';
+  var HINT_RESULT = 'Rutina: <code>AC</code> → 1 cifra <code>×</code> 2 cifras <code>×</code> 3 cifras <code>+</code> → que aporreen unas 8 teclas → <code>=</code>. Acá miente el <code>=</code>, así que <b>nadie puede rehacer la cuenta</b>.';
 
   function syncUI(){
     document.getElementById("swArmed").setAttribute("aria-pressed", String(cfg.armed));
@@ -850,7 +850,7 @@
     document.getElementById("swSep").setAttribute("aria-pressed", String(cfg.sep));
     document.getElementById("armState").textContent = cfg.armed
       ? "Listo para disparar"
-      : (cfg.rearm ? "Desarmado â€” tocÃ¡ AC tres veces para rearmar" : "Desarmado");
+      : (cfg.rearm ? "Desarmado — tocá AC tres veces para rearmar" : "Desarmado");
     document.getElementById("methodNote").textContent = cfg.method === "addend"
       ? "Fuerza el sumando: la cuenta es real y verificable"
       : "Fuerza el resultado: el = miente, no se puede rehacer";
