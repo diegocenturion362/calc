@@ -1,5 +1,5 @@
 // Cachea todo en la primera visita para que la calculadora funcione sin internet.
-var CACHE = 'calc-v6';
+var CACHE = 'calc-v7';
 var ASSETS = ['./', './index.html', './manifest.webmanifest', './icon-180.png', './icon-512.png'];
 
 self.addEventListener('install', function(e){

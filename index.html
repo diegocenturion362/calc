@@ -228,6 +228,14 @@
   }
   .sw[aria-pressed="true"]{background:#30d158;}
   .sw[aria-pressed="true"]::after{transform:translateX(20px);}
+  .numin{
+    flex:0 0 auto;width:148px;
+    background:#3a3a3c;border:0;border-radius:8px;
+    color:#fff;font-family:inherit;font-size:17px;font-weight:500;
+    padding:8px 11px;text-align:right;letter-spacing:.02em;
+    font-variant-numeric:tabular-nums;
+  }
+  .numin:focus{outline:2px solid var(--op);outline-offset:1px;}
   .peek{
     margin:0 12px 14px;padding:14px;
     background:var(--sheet-row);border-radius:12px;
@@ -333,10 +341,10 @@
     <div class="sheet" role="dialog" aria-modal="true" aria-label="Ajustes del truco">
       <div class="grab"></div>
       <h2>Ajustes del truco</h2>
-      <p class="sub">build 6 · sumando forzado — se repite todas las veces que quieras, sin rearmar.<br>Mantené pulsado el número grande 0,8 s para volver a abrir este panel.</p>
+      <p class="sub">build 7 · sumando forzado a número fijo — se repite todas las veces que quieras.<br>Mantené pulsado el número grande 0,8 s para volver a abrir este panel.</p>
 
       <div class="peek">
-        <div class="k">Resultado final si disparás ahora</div>
+        <div class="k">Resultado final de la suma</div>
         <div class="v" id="peekVal">—</div>
         <div class="t" id="peekTime">—</div>
       </div>
@@ -372,6 +380,17 @@
 
       <div class="group">
         <div class="row">
+          <div class="lbl"><b>Objetivo</b><span id="modeNote">El número al que tiene que llegar la suma</span></div>
+          <div class="seg" id="segMode">
+            <button type="button" data-v="fixed" aria-pressed="true">Número fijo</button>
+            <button type="button" data-v="datetime" aria-pressed="false">Fecha y hora</button>
+          </div>
+        </div>
+        <div class="row" id="rowFixed">
+          <div class="lbl"><b>Número</b><span>Lo que tiene que dar la suma final</span></div>
+          <input class="numin" id="inpFixed" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" aria-label="Número objetivo">
+        </div>
+        <div class="row" id="rowOffset">
           <div class="lbl"><b>Adelanto</b><span>Minutos de margen desde el primer toque hasta el remate</span></div>
           <div class="seg" id="segOffset">
             <button type="button" data-v="0" aria-pressed="false">0</button>
@@ -382,14 +401,14 @@
             <button type="button" data-v="5" aria-pressed="false">+5</button>
           </div>
         </div>
-        <div class="row">
+        <div class="row" id="rowOrder">
           <div class="lbl"><b>Orden</b><span>DDMMHHMM o MMDDHHMM</span></div>
           <div class="seg" id="segOrder">
             <button type="button" data-v="dm" aria-pressed="true">Día·Mes</button>
             <button type="button" data-v="md" aria-pressed="false">Mes·Día</button>
           </div>
         </div>
-        <div class="row">
+        <div class="row" id="rowHour">
           <div class="lbl"><b>Hora</b><span>Formato de las dos últimas parejas</span></div>
           <div class="seg" id="segHour">
             <button type="button" data-v="24" aria-pressed="true">24 h</button>
@@ -430,7 +449,8 @@
 
   /* ---------------- ajustes ---------------- */
   var DEF = {
-    cfgv:3, method:"addend", armed:true, once:false, rearm:true, guard:"strict",
+    cfgv:4, method:"addend", armed:true, once:false, rearm:true, guard:"strict",
+    mode:"fixed", fixed:15697790,
     offset:1, order:"dm", hour:"24", sep:true, bar:"auto"
   };
   var cfg = Object.assign({}, DEF);
@@ -441,6 +461,7 @@
       delete saved.armed;              // el armado NUNCA se hereda
       if(saved.cfgv !== DEF.cfgv){     // adopta los defaults nuevos
         delete saved.offset; delete saved.once; delete saved.guard;
+        delete saved.mode; delete saved.fixed;
       }
       cfg = Object.assign(cfg, saved);
     }
@@ -560,7 +581,18 @@
       minuteStart: Math.floor(ms / 60000) * 60000
     };
   }
-  function targetNow(){ return targetAt(Date.now() + cfg.offset * 60000); }
+  function fixedValue(){
+    var v = Math.round(Number(cfg.fixed));
+    if(!isFinite(v) || v < 1) v = DEF.fixed;
+    return v;
+  }
+
+  function targetNow(){
+    if(cfg.mode === "fixed"){
+      return { value: fixedValue(), label: "número fijo", minuteStart: 0 };
+    }
+    return targetAt(Date.now() + cfg.offset * 60000);
+  }
 
   // X = fecha − producto, o null si la cuenta no sirve
   function buildAddend(P){
@@ -796,18 +828,28 @@
   veil.addEventListener("click", function(ev){ if(ev.target === veil) closeSheet(); });
   document.getElementById("btnClose").addEventListener("click", closeSheet);
 
+  function digitsNote(v){
+    if(cfg.method !== "addend") return "";
+    var lo = String(Math.max(1, v - 890109)).length;
+    var hi = String(Math.max(1, v - 2000)).length;
+    return "<br>Sumando: <em>" + (lo === hi ? lo + " dígitos" : lo + "–" + hi + " dígitos") + "</em>.";
+  }
+
   function peekTick(){
-    var now = Date.now();
-    var t = targetAt(now + cfg.offset * 60000);
-    document.getElementById("peekVal").textContent = pretty(String(t.value));
-    var wait = Math.max(0, Math.round((t.minuteStart - now) / 1000));
-    var mm = Math.floor(wait / 60), ss = wait % 60;
-    var line = t.label + " — el reloj lo alcanza en <em>" + mm + ":" + pad2(ss) + "</em> y te quedan 60 s para rematar.";
-    if(cfg.method === "addend"){
-      var lo = String(t.value - 890109).length;
-      var hi = String(t.value - 2000).length;
-      line += "<br>Sumando: <em>" + (lo === hi ? lo + " dígitos" : lo + "–" + hi + " dígitos") + "</em>.";
+    var t, line;
+    if(cfg.mode === "fixed"){
+      t = fixedValue();
+      line = "Número fijo — no depende del reloj, no hay tiempo que esperar." + digitsNote(t);
+      document.getElementById("peekVal").textContent = pretty(String(t));
+      document.getElementById("peekTime").innerHTML = line;
+      return;
     }
+    var now = Date.now();
+    var d = targetAt(now + cfg.offset * 60000);
+    document.getElementById("peekVal").textContent = pretty(String(d.value));
+    var wait = Math.max(0, Math.round((d.minuteStart - now) / 1000));
+    line = d.label + " — el reloj lo alcanza en <em>" + Math.floor(wait / 60) + ":" + pad2(wait % 60) +
+           "</em> y te quedan 60 s para rematar." + digitsNote(d.value);
     document.getElementById("peekTime").innerHTML = line;
   }
 
@@ -818,6 +860,7 @@
     if(cfg.method === "addend"){
       // deja montado 7 × 42 × 385 + , listo para que aporrees el teclado
       disp = fmt(7 * 42 * 385); acc = 7 * 42 * 385; op = "add"; typing = false;
+      mulCount = 2;   // el ensayo tiene que cumplir la misma condición que la rutina
     }else{
       disp = String(targetNow().value); frozen = true; typing = false;
     }
@@ -846,6 +889,21 @@
   }
   bindSeg("segMethod","method");
   bindSeg("segGuard","guard");
+  bindSeg("segMode","mode");
+
+  var inpFixed = document.getElementById("inpFixed");
+  inpFixed.addEventListener("input", function(){
+    var v = inpFixed.value.replace(/\D/g, "").slice(0, 9);
+    if(inpFixed.value !== v) inpFixed.value = v;
+    if(v.length){ cfg.fixed = Number(v); save(); peekTick(); }
+  });
+  inpFixed.addEventListener("blur", function(){
+    if(!inpFixed.value.length || Number(inpFixed.value) < 1){
+      cfg.fixed = DEF.fixed; save();
+    }
+    inpFixed.value = String(fixedValue());
+    peekTick();
+  });
   bindSeg("segOffset","offset", Number);
   bindSeg("segOrder","order");
   bindSeg("segHour","hour");
@@ -875,9 +933,19 @@
     document.getElementById("guardNote").textContent = cfg.guard === "strict"
       ? "Solo si hubo dos × antes del +. Una cuenta normal nunca lo activa"
       : "Cualquier + lo dispara. Ojo: puede saltar en una cuenta común";
+    var esFijo = cfg.mode === "fixed";
+    document.getElementById("modeNote").textContent = esFijo
+      ? "Siempre el mismo número, sin importar la hora"
+      : "La fecha y hora del momento, como DDMMHHMM";
+    if(document.activeElement !== inpFixed) inpFixed.value = String(fixedValue());
+    document.getElementById("rowFixed").hidden  = !esFijo;
+    document.getElementById("rowOffset").hidden = esFijo;
+    document.getElementById("rowOrder").hidden  = esFijo;
+    document.getElementById("rowHour").hidden   = esFijo;
     document.getElementById("hintText").innerHTML = cfg.method === "addend" ? HINT_ADDEND : HINT_RESULT;
     syncSeg("segMethod", cfg.method);
     syncSeg("segGuard", cfg.guard);
+    syncSeg("segMode", cfg.mode);
     syncSeg("segOffset", cfg.offset);
     syncSeg("segOrder", cfg.order);
     syncSeg("segHour", cfg.hour);
